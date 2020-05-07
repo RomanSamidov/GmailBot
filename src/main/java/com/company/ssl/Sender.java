@@ -7,6 +7,9 @@ import java.util.Properties;
 
 public class Sender {
 
+    private String usernamedasdada;
+
+
     private String username;
     private String password;
     private Properties props;
