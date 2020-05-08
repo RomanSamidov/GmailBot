@@ -1,26 +1,71 @@
 package com.company;
 
 
-import com.company.ssl.Sender;
+import com.company.ssl.SendersManager;
 import com.company.view.Authorization;
-import javafx.application.Application;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main {
-     private static com.company.ssl.Sender sslSender;//= new com.company.ssl.Sender("roman.samidov@gmail.com", "Samadidov22847");
+
+     private static SendersManager senders = new SendersManager();
+     private static ArrayList<String> recipients = new ArrayList<>();
+     private static boolean hasError = false;
 
         public static void main(String[] args){
 
+            hasError = senders.readSenders("Senders.txt");
+            readRecipients("Recipients.txt");
 
             Authorization authorization = new Authorization();
             authorization.launchIt(args);
-
     }
 
-    public static void sendMessage(String toEmail, String subject, String text) {
-         sslSender.send(subject, text, toEmail);
+    public static boolean sendMessages(String subject, String text) {
+        boolean hasErr = false;
+        hasErr = senders.sendMessages(recipients, subject, text);
+        return hasErr;
     }
 
-    public static void setSslSender(Sender sslSender) {
-        Main.sslSender = sslSender;
+    public static void readRecipients(String file) {
+        try(FileReader reader = new FileReader(file))
+        {
+            while (true) {
+                String username = "";
+
+                int c = reader.read();
+                if( c == '[') {
+
+                    c = reader.read();
+                    while (c != ']') {
+                        if(c != ' ') username = username + (char) c;
+                        c = reader.read();
+                    }
+
+                    recipients.add(username);
+                }
+
+                if((c = reader.read()) == -1) {
+                    break;
+                }
+            }
+        }
+        catch(IOException ex){
+            System.out.println(ex.getMessage());
+        }
+    }
+
+    public static boolean isHasError() {
+        return hasError;
+    }
+
+    public static String getErrors() {
+            String errorOut = "";
+        for (String error: senders.getErrors()) {
+            errorOut += error + "\n";
+        }
+        return errorOut;
     }
 }
