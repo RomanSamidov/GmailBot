@@ -24,8 +24,7 @@ public class Main {
     }
 
     public static boolean sendMessages(String subject, String text) {
-        boolean hasErr = false;
-        hasErr = senders.sendMessages(recipients, subject, text);
+        boolean hasErr = senders.sendMessages(recipients, subject, text);
         return hasErr;
     }
 
