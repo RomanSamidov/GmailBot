@@ -18,7 +18,6 @@ public class Sender {
         this.username = username;
         this.password = password;
 
-
         String host = "smtp.gmail.com";
         props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
