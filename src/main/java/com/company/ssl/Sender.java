@@ -14,7 +14,7 @@ public class Sender {
         return username;
     }
 
-    public Sender(String username, String password, String port) {
+    public Sender(String username, String password) {
         this.username = username;
         this.password = password;
 
@@ -22,10 +22,10 @@ public class Sender {
         String host = "smtp.gmail.com";
         props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
-        props.put("mail.smtp.socketFactory.port", port);
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.auth", "true");
-        props.put("mail.smtp.port", port);
+        props.put("mail.smtp.port", "465");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
 
     public void send(String subject, String text, String toEmail){

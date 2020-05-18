@@ -19,6 +19,8 @@ public class Main {
             hasError = senders.readSenders("Senders.txt");
             readRecipients("Recipients.txt");
 
+            hasError = senders.hasError();
+
             Authorization authorization = new Authorization();
             authorization.launchIt(args);
     }
@@ -36,7 +38,6 @@ public class Main {
 
                 int c = reader.read();
                 if( c == '[') {
-
                     c = reader.read();
                     while (c != ']') {
                         if(c != ' ') username = username + (char) c;
@@ -46,7 +47,7 @@ public class Main {
                     recipients.add(username);
                 }
 
-                if((c = reader.read()) == -1) {
+                if(c == -1) {
                     break;
                 }
             }

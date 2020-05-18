@@ -10,6 +10,10 @@ public class SendersManager {
 
     public SendersManager(){}
 
+    public boolean hasError() {
+        return errors.isEmpty();
+    }
+
     public boolean readSenders(String file) {
         boolean hasError = false;
         try(FileReader reader = new FileReader(file))
@@ -33,7 +37,7 @@ public class SendersManager {
                         c = reader.read();
                     }
 
-                    senders.add(new Sender(username, password, String.valueOf(465)));
+                    senders.add(new Sender(username, password));
                     i++;
                 }
 
@@ -51,10 +55,10 @@ public class SendersManager {
 
     public boolean sendMessages(ArrayList<String> toEmails, String subject, String text) {
         boolean hasError = false;
-        int j = 1, numberSenders = senders.size();
+        int j = 0, numberSenders = senders.size();
         int i = 0, numberEmails = toEmails.size();
-      //  while (i < numberEmails) {
-         while (true) {
+        while (i < numberEmails) {
+     //    while (true) {
 
             try {
                 senders.get(j).send(subject, text, toEmails.get(i));
@@ -64,7 +68,7 @@ public class SendersManager {
                 System.out.println(e.getMessage());
                 errors.add(e.getMessage());
                 hasError = true;
-                //i--;
+                i--;
             } finally {
                 j++;
                 if(j >= numberSenders) j = 0;
@@ -76,9 +80,9 @@ public class SendersManager {
                 e.printStackTrace();
             }
             
-           // i++;
+            i++;
         }
-     //   return hasError;
+        return hasError;
     }
 
     public ArrayList<String> getErrors() {
