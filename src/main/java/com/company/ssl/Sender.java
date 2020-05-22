@@ -63,13 +63,17 @@ public class Sender {
             multipart.addBodyPart(messageBodyPart);
 
             // second part (the image)
-            for (File file: files) {
-                messageBodyPart = new MimeBodyPart();
-                DataSource fds = new FileDataSource(file.getAbsolutePath());
-                messageBodyPart.setDataHandler(new DataHandler(fds));
-                //   messageBodyPart.setHeader("Content-ID","<image>");
-                // add it
-                multipart.addBodyPart(messageBodyPart);
+            try {
+                for (File file : files) {
+                    messageBodyPart = new MimeBodyPart();
+                    DataSource fds = new FileDataSource(file.getAbsolutePath());
+                    messageBodyPart.setDataHandler(new DataHandler(fds));
+                    //   messageBodyPart.setHeader("Content-ID","<image>");
+                    // add it
+                    multipart.addBodyPart(messageBodyPart);
+                }
+            }catch (Exception e) {
+
             }
             // put everything together
             message.setContent(multipart);

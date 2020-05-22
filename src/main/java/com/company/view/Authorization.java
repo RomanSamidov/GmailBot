@@ -110,11 +110,6 @@ public class Authorization extends Application {
             button.setOnAction(new EventHandler<ActionEvent>() {
                 public void handle(ActionEvent event) {
                      files[0] = fileChooser.showOpenMultipleDialog(primaryStage);
-                    for (File file: files[0]) {
-                        System.out.println(file.getAbsolutePath());
-                    }
-
-
                 };
             });
 
