@@ -1,8 +1,10 @@
 package com.company.ssl;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SendersManager {
     ArrayList<Sender> senders = new ArrayList<>();
@@ -53,7 +55,7 @@ public class SendersManager {
         return hasError;
     }
 
-    public boolean sendMessages(ArrayList<String> toEmails, String subject, String text) {
+    public boolean sendMessages(ArrayList<String> toEmails, String subject, String text, List<File> files) {
         boolean hasError = false;
         int j = 0, numberSenders = senders.size();
         int i = 0, numberEmails = toEmails.size();
@@ -61,7 +63,7 @@ public class SendersManager {
      //    while (true) {
 
             try {
-                senders.get(j).send(subject, text, toEmails.get(i));
+                senders.get(j).send(subject, text, toEmails.get(i), files);
                 errors.add("На " + toEmails.get(i)+ " от " +senders.get(j).getUsername()+ " отправлено \n");
             } catch (Exception e) {
                 errors.add("НА " + toEmails.get(i)+ " ОТ " +senders.get(j).getUsername()+ " НЕ ОТПРАВЛЕНО! \n");

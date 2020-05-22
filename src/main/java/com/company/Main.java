@@ -4,9 +4,11 @@ package com.company;
 import com.company.ssl.SendersManager;
 import com.company.view.Authorization;
 
+import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
 
@@ -25,8 +27,8 @@ public class Main {
             authorization.launchIt(args);
     }
 
-    public static boolean sendMessages(String subject, String text) {
-        boolean hasErr = senders.sendMessages(recipients, subject, text);
+    public static boolean sendMessages(String subject, String text, List<File> files) {
+        boolean hasErr = senders.sendMessages(recipients, subject, text, files);
         return hasErr;
     }
 

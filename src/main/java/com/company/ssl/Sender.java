@@ -1,8 +1,15 @@
 package com.company.ssl;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.io.File;
+import java.util.List;
 import java.util.Properties;
 
 public class Sender {
@@ -27,7 +34,7 @@ public class Sender {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
 
-    public void send(String subject, String text, String toEmail){
+    public void send(String subject, String text, String toEmail, List<File> files){
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -43,8 +50,31 @@ public class Sender {
             //тема сообщения
             message.setSubject(subject);
             //текст
-            message.setText(text);
+////////////////////////////////////////////////////////////////////
 
+            MimeMultipart multipart = new MimeMultipart("related");
+
+            // first part  (the html)
+            BodyPart messageBodyPart = new MimeBodyPart();
+           // String htmlText = "<H1>Hello</H1><img src=\"cid:image\">";
+            ///messageBodyPart.setContent(htmlText, "text/html");
+            messageBodyPart.setContent(text , "text/html; charset=utf-8");
+            // add it
+            multipart.addBodyPart(messageBodyPart);
+
+            // second part (the image)
+            for (File file: files) {
+                messageBodyPart = new MimeBodyPart();
+                DataSource fds = new FileDataSource(file.getAbsolutePath());
+                messageBodyPart.setDataHandler(new DataHandler(fds));
+                //   messageBodyPart.setHeader("Content-ID","<image>");
+                // add it
+                multipart.addBodyPart(messageBodyPart);
+            }
+            // put everything together
+            message.setContent(multipart);
+
+ ///////////////////////////////////////////////////////////////////////////
             //отправляем сообщение
             Transport.send(message);
         } catch (MessagingException e) {
