@@ -16,6 +16,10 @@ public class SendersManager {
         return errors.isEmpty();
     }
 
+    public void addSender(String username, String password) {
+            senders.add(new Sender(username, password));
+    }
+
     public boolean readSenders(String file) {
         boolean hasError = false;
         try(FileReader reader = new FileReader(file))
@@ -64,7 +68,7 @@ public class SendersManager {
             Errors[f] = false;
         }
         while (i < numberEmails) {
-     //    while (true) {
+     //    while (true) {///////
 
             try {
                 senders.get(j).send(subject, text, toEmails.get(i), files);

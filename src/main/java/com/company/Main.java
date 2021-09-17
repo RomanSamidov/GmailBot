@@ -12,23 +12,25 @@ import java.util.List;
 
 public class Main {
 
-     private static SendersManager senders = new SendersManager();
+     public static SendersManager senders = new SendersManager();
      private static ArrayList<String> recipients = new ArrayList<>();
      private static boolean hasError = false;
 
         public static void main(String[] args){
 
-            hasError = senders.readSenders("Senders.txt");
+//            hasError = senders.readSenders("Senders.txt");
             readRecipients("Recipients.txt");
 
-            hasError = senders.hasError();
+//            hasError = senders.hasError();
 
             Authorization authorization = new Authorization();
             authorization.launchIt(args);
     }
 
     public static boolean sendMessages(String subject, String text, List<File> files) {
-        boolean hasErr = senders.sendMessages(recipients, subject, text, files);
+//            while(true) {
+                boolean hasErr = senders.sendMessages(recipients, subject, text, files);
+//            }
         return hasErr;
     }
 
