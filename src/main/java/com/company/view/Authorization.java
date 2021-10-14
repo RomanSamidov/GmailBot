@@ -31,11 +31,28 @@ public class Authorization extends Application {
             primaryStage.setMinWidth(600);
             primaryStage.setWidth(600);
             VBox root = new VBox();
+
+            HBox box3 = new HBox();
+            box3.setSpacing(10);
+
+            Label label = new Label("Необранний файл з отримувачами");
+
+            final FileChooser fileChooser1 = new FileChooser();
+            Button button1 = new Button("Обрати");
+            button1.setOnAction(event -> {
+                String string = fileChooser1.showOpenDialog(primaryStage).getAbsolutePath();
+                if(Main.setRecipients(string)) {
+                    label.setText("Отримувачі з " + string.substring(string.lastIndexOf('/')+1));
+                }
+            });
+            box3.getChildren().addAll(button1, label);
+
+
             root.setSpacing(10);
             root.setPadding(new Insets(20, 20, 20, 20));
             root.setStyle("-fx-base: rgba(60, 60, 60, 255);");
             final TextField messageSubject = new TextField();
-            root.getChildren().addAll(new Label("Тема сообщения:"), messageSubject);
+            root.getChildren().addAll(box3, new Label("Тема сообщения:"), messageSubject);
             final TextArea messageText = new TextArea();
             messageText.setPrefHeight(600);
 //            messageText.setMaxHeight(600);
@@ -47,31 +64,19 @@ public class Authorization extends Application {
             strongIv.setFitWidth(20);
             Button strong = new Button("", strongIv);
 
-            strong.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                    messageText.appendText( "<strong> Текст </strong>");
-                }
-            });
+            strong.setOnAction(event -> messageText.appendText( "<strong> Текст </strong>"));
             Image emI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/КУРСИВ.png")));
             ImageView emIv=new ImageView(emI);
             emIv.setFitHeight(20);
             emIv.setFitWidth(20);
             Button em = new Button("",emIv);
-            em.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                    messageText.appendText( "<em> Текст </em>");
-                }
-            });
+            em.setOnAction(event -> messageText.appendText( "<em> Текст </em>"));
             Image uI = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ПОДЧЕРКНУТЫЙ.png")));
             ImageView uIv=new ImageView(uI);
             uIv.setFitHeight(20);
             uIv.setFitWidth(20);
             Button u = new Button("", uIv);
-            u.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                    messageText.appendText( "<u> Текст </u>");
-                }
-            });
+            u.setOnAction(event -> messageText.appendText( "<u> Текст </u>"));
 
             TextField sizeField = new TextField("14");
             Image sizeI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/РАЗМЕР.png")));
@@ -79,33 +84,23 @@ public class Authorization extends Application {
             sizeIv.setFitHeight(20);
             sizeIv.setFitWidth(20);
             Button size = new Button("", sizeIv);
-            size.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                   try {
-                       messageText.appendText( "<font size=\"" + Integer.parseInt(sizeField.getText()) + "\"> Текст </font>");
-                   } catch ( Exception e) { System.out.println(e);}
-                }
+            size.setOnAction(event -> {
+               try {
+                   messageText.appendText( "<font size=\"" + Integer.parseInt(sizeField.getText()) + "\"> Текст </font>");
+               } catch ( Exception e) {  e.printStackTrace();}
             });
             Image plusI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/РАЗМЕР(+).png")));
             ImageView plusIv=new ImageView(plusI);
             plusIv.setFitHeight(20);
             plusIv.setFitWidth(20);
             Button plus = new Button("", plusIv);
-            plus.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                    sizeField.setText(String.valueOf(Integer.parseInt(sizeField.getText())+2));
-                }
-            });
+            plus.setOnAction(event -> sizeField.setText(String.valueOf(Integer.parseInt(sizeField.getText())+2)));
             Image minusI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/РАЗМЕР(-).png")));
             ImageView minusIv=new ImageView(minusI);
             minusIv.setFitHeight(20);
             minusIv.setFitWidth(20);
             Button minus = new Button("", minusIv);
-            minus.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                    sizeField.setText(String.valueOf(Integer.parseInt(sizeField.getText())-2));
-                }
-            });
+            minus.setOnAction(event -> sizeField.setText(String.valueOf(Integer.parseInt(sizeField.getText())-2)));
 
 //            ObservableList<String> langs = FXCollections.observableArrayList("Красный", "Синий", "Зеленый", "Жёлтый");
 //            ComboBox<String> langsComboBox = new ComboBox<String>(langs);
@@ -144,11 +139,7 @@ public class Authorization extends Application {
 //            });
 
             Button normal = new Button("Редактор");
-            normal.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                    getHostServices().showDocument("https://htmled.it/redaktor/");
-                }
-            });
+            normal.setOnAction(event -> getHostServices().showDocument("https://htmled.it/redaktor/"));
 
 //            box.getChildren().addAll(strong, em, u, size, sizeField, langsComboBox, fontComboBox, normal);
 
@@ -167,41 +158,35 @@ public class Authorization extends Application {
 
             Button button = new Button("", addIv);
 //            button.setRotate(90);
-            button.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
-                     files[0] = fileChooser.showOpenMultipleDialog(primaryStage);
-                };
-            });
+            button.setOnAction(event -> files[0] = fileChooser.showOpenMultipleDialog(primaryStage));
 
             Button buttonNextView = new Button("Отправить");
-            buttonNextView.setOnAction(new EventHandler<ActionEvent>() {
-                public void handle(ActionEvent event) {
+            buttonNextView.setOnAction(event -> {
 
-                    // create a text input dialog
-                    TextInputDialog td = new TextInputDialog("Введите вашу почту.");
-                    td.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
-                    // setHeaderText
-                    td.setHeaderText("Введите вашу почту");
-                    // show the text input dialog
-                    Optional<String> login = td.showAndWait();
+                // create a text input dialog
+                TextInputDialog td = new TextInputDialog("Введите вашу почту.");
+                td.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
+                // setHeaderText
+                td.setHeaderText("Введите вашу почту");
+                // show the text input dialog
+                Optional<String> login = td.showAndWait();
 
-                    td = new TextInputDialog("Введите ваш пароль.");
-                    td.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
-                    td.setHeaderText("Введите ваш пароль");
-                    Optional<String> password = td.showAndWait();
+                td = new TextInputDialog("Введите ваш пароль.");
+                td.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
+                td.setHeaderText("Введите ваш пароль");
+                Optional<String> password = td.showAndWait();
 
-                    Main.senders.addSender(login.get(), password.get());
+                Main.senders.addSender(login.get(), password.get());
 
-                    Main.sendMessages( messageSubject.getText(), messageText.getText(), files[0]);
+                Main.sendMessages( messageSubject.getText(), messageText.getText(), files[0]);
 
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("");
-                    alert.setHeaderText("Результат:");
-                    alert.setContentText(Main.getErrors());
-                    alert.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
-                    alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("");
+                alert.setHeaderText("Результат:");
+                alert.setContentText(Main.getErrors());
+                alert.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
+                alert.showAndWait();
 
-                }
             });
 
             box2.getChildren().addAll(buttonNextView, button);

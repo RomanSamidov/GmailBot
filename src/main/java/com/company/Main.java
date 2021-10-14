@@ -18,13 +18,16 @@ public class Main {
 
         public static void main(String[] args){
 
-//            hasError = senders.readSenders("Senders.txt");
-            readRecipients("Recipients.txt");
 
 //            hasError = senders.hasError();
 
             Authorization authorization = new Authorization();
             authorization.launchIt(args);
+    }
+
+    public static boolean setRecipients(String path) {
+        recipients = RecipientsReader.readRecipients(path);
+        return !recipients.isEmpty();
     }
 
     public static boolean sendMessages(String subject, String text, List<File> files) {
@@ -34,42 +37,15 @@ public class Main {
         return hasErr;
     }
 
-    public static void readRecipients(String file) {
-        try(FileReader reader = new FileReader(file))
-        {
-            while (true) {
-                String username = "";
-
-                int c = reader.read();
-                if( c == '[') {
-                    c = reader.read();
-                    while (c != ']') {
-                        if(c != ' ') username = username + (char) c;
-                        c = reader.read();
-                    }
-
-                    recipients.add(username);
-                }
-
-                if(c == -1) {
-                    break;
-                }
-            }
-        }
-        catch(IOException ex){
-            System.out.println(ex.getMessage());
-        }
-    }
-
     public static boolean isHasError() {
         return hasError;
     }
 
     public static String getErrors() {
-            String errorOut = "";
+            StringBuilder errorOut = new StringBuilder();
         for (String error: senders.getErrors()) {
-            errorOut += error + "\n";
+            errorOut.append(error).append("\n");
         }
-        return errorOut;
+        return errorOut.toString();
     }
 }
