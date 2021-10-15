@@ -20,45 +20,6 @@ public class SendersManager {
             senders.add(new Sender(username, password));
     }
 
-    public boolean readSenders(String file) {
-        boolean hasError = false;
-        try(FileReader reader = new FileReader(file))
-        {
-            int i = 0;
-            while (true) {
-                String username = "", password = "";
-                // читаем посимвольно
-                int c = reader.read();
-                if( c == '[') {
-
-                    c = reader.read();
-                    while (c != ',') {
-                        if(c != ' ') username = username + (char) c;
-                        c = reader.read();
-                    }
-
-                    c = reader.read();
-                    while (c != ']') {
-                        if(c != ' ') password = password + (char) c;
-                        c = reader.read();
-                    }
-
-                    senders.add(new Sender(username, password));
-                    i++;
-                }
-
-                if((c = reader.read()) == -1) {
-                    break;
-                }
-            }
-        }
-        catch(IOException ex){
-            errors.add(ex.getMessage());
-            hasError = true;
-        }
-        return hasError;
-    }
-
     public boolean sendMessages(ArrayList<String> toEmails, String subject, String text, List<File> files) {
         boolean hasError = false;
         int j = 0, numberSenders = senders.size();

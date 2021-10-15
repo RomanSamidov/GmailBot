@@ -17,10 +17,6 @@ public class Main {
      private static boolean hasError = false;
 
         public static void main(String[] args){
-
-
-//            hasError = senders.hasError();
-
             Authorization authorization = new Authorization();
             authorization.launchIt(args);
     }
@@ -37,9 +33,6 @@ public class Main {
         return hasErr;
     }
 
-    public static boolean isHasError() {
-        return hasError;
-    }
 
     public static String getErrors() {
             StringBuilder errorOut = new StringBuilder();

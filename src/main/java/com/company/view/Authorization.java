@@ -17,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -149,7 +150,7 @@ public class Authorization extends Application {
             box2.setSpacing(10);
 
             final FileChooser fileChooser = new FileChooser();
-            final List<File>[] files = new List[1];
+            final List<File> files = new ArrayList<>();
 
             Image addI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ФАЙЛ.png")));
             ImageView addIv=new ImageView(addI);
@@ -158,7 +159,7 @@ public class Authorization extends Application {
 
             Button button = new Button("", addIv);
 //            button.setRotate(90);
-            button.setOnAction(event -> files[0] = fileChooser.showOpenMultipleDialog(primaryStage));
+            button.setOnAction(event -> files.addAll(fileChooser.showOpenMultipleDialog(primaryStage)));
 
             Button buttonNextView = new Button("Отправить");
             buttonNextView.setOnAction(event -> {
@@ -178,7 +179,7 @@ public class Authorization extends Application {
 
                 Main.senders.addSender(login.get(), password.get());
 
-                Main.sendMessages( messageSubject.getText(), messageText.getText(), files[0]);
+                Main.sendMessages( messageSubject.getText(), messageText.getText(), files);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("");

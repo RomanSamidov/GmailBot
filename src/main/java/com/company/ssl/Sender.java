@@ -68,8 +68,12 @@ public class Sender {
                     messageBodyPart = new MimeBodyPart();
                     DataSource fds = new FileDataSource(file.getAbsolutePath());
                     messageBodyPart.setDataHandler(new DataHandler(fds));
-                    //   messageBodyPart.setHeader("Content-ID","<image>");
-                    // add it
+//                    messageBodyPart.setHeader("Content-ID","<image>");
+                    messageBodyPart.setFileName(file.getName());
+//                    messageBodyPart.setDescription("2");
+//                    messageBodyPart.setDisposition("3");
+//                    messageBodyPart.setText("4");
+                    //                     add it
                     multipart.addBodyPart(messageBodyPart);
                 }
             }catch (Exception e) {
