@@ -13,7 +13,6 @@ import java.util.List;
 public class Main {
 
      public static SendersManager senders = new SendersManager();
-     private static ArrayList<String> recipients = new ArrayList<>();
      private static boolean hasError = false;
 
         public static void main(String[] args){
@@ -21,12 +20,7 @@ public class Main {
             authorization.launchIt(args);
     }
 
-    public static boolean setRecipients(String path) {
-        recipients = RecipientsReader.readRecipients(path);
-        return !recipients.isEmpty();
-    }
-
-    public static boolean sendMessages(String subject, String text, List<File> files) {
+    public static boolean sendMessages(String subject, String text, List<File> files, ArrayList<String> recipients) {
 //            while(true) {
                 boolean hasErr = senders.sendMessages(recipients, subject, text, files);
 //            }

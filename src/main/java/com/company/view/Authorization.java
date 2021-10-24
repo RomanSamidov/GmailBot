@@ -1,11 +1,8 @@
 package com.company.view;
 
 import com.company.Main;
+import com.company.RecipientsSelector;
 import javafx.application.Application;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,6 +20,8 @@ import java.util.Objects;
 import java.util.Optional;
 
 public class Authorization extends Application {
+
+
     public void start(final Stage primaryStage) {
         try {
             primaryStage.setMaxHeight(700);
@@ -36,15 +35,19 @@ public class Authorization extends Application {
             HBox box3 = new HBox();
             box3.setSpacing(10);
 
+            RecipientsSelectorUI box4 = new RecipientsSelectorUI();
+            box4.setSpacing(10);
+
             Label label = new Label("Необранний файл з отримувачами");
 
             final FileChooser fileChooser1 = new FileChooser();
             Button button1 = new Button("Обрати");
             button1.setOnAction(event -> {
                 String string = fileChooser1.showOpenDialog(primaryStage).getAbsolutePath();
-                if(Main.setRecipients(string)) {
+                if(RecipientsSelector.readRecipientsFromFile(string)) {
                     label.setText("Отримувачі з " + string.substring(string.lastIndexOf('/')+1));
-                }
+                    box4.setSelector();
+                } else  label.setText("Необранний файл з отримувачами");
             });
             box3.getChildren().addAll(button1, label);
 
@@ -53,7 +56,7 @@ public class Authorization extends Application {
             root.setPadding(new Insets(20, 20, 20, 20));
             root.setStyle("-fx-base: rgba(60, 60, 60, 255);");
             final TextField messageSubject = new TextField();
-            root.getChildren().addAll(box3, new Label("Тема сообщения:"), messageSubject);
+            root.getChildren().addAll(box3, box4, new Label("Тема сообщения:"), messageSubject);
             final TextArea messageText = new TextArea();
             messageText.setPrefHeight(600);
 //            messageText.setMaxHeight(600);
@@ -179,7 +182,7 @@ public class Authorization extends Application {
 
                 Main.senders.addSender(login.get(), password.get());
 
-                Main.sendMessages( messageSubject.getText(), messageText.getText(), files);
+                Main.sendMessages( messageSubject.getText(), messageText.getText(), files, RecipientsSelector.getRecipients());
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("");
@@ -201,6 +204,7 @@ public class Authorization extends Application {
             e.printStackTrace();
         }
     }
+
 
     public void launchIt(String[] args) {
         launch(args);
