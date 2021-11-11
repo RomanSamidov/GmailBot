@@ -1,7 +1,8 @@
 package com.company.view;
 
-import com.company.Main;
+import com.company.ErrorsWriter;
 import com.company.RecipientsSelector;
+import com.company.ssl.SendersManager;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 public class Authorization extends Application {
 
+    private SendersManager senders = new SendersManager();
 
     public void start(final Stage primaryStage) {
         try {
@@ -175,19 +177,24 @@ public class Authorization extends Application {
                 // show the text input dialog
                 Optional<String> login = td.showAndWait();
 
-                td = new TextInputDialog("Введите ваш пароль.");
-                td.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
-                td.setHeaderText("Введите ваш пароль");
-                Optional<String> password = td.showAndWait();
+                PasswordDialog pd = new PasswordDialog();
+                pd.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
+                Optional<String> password = pd.showAndWait();
 
-                Main.senders.addSender(login.get(), password.get());
-
-                Main.sendMessages( messageSubject.getText(), messageText.getText(), files, RecipientsSelector.getRecipients());
+                senders.setSender(login.get(), password.get());
+                ArrayList<String> recipients = RecipientsSelector.getRecipients();
+                boolean hasError = senders.sendMessages(recipients, messageSubject.getText(), messageText.getText(), files);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("");
                 alert.setHeaderText("Результат:");
-                alert.setContentText(Main.getErrors());
+                if(!hasError){
+                    alert.setContentText("Всем отправило");
+                }
+                else {
+                    alert.setContentText("Не всем отправило");
+                    ErrorsWriter.writeErrorsODS(senders.getErrors(), recipients);
+                }
                 alert.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
                 alert.showAndWait();
 

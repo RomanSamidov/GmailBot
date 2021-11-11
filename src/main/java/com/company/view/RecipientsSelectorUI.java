@@ -13,13 +13,12 @@ public class RecipientsSelectorUI extends HBox {
 
     private ComboBox<String> citiesComboBox;
     private ComboBox<String> regionComboBox;
-    private Button add;
     private ObservableList<String> selected;
-    private ComboBox<String> selectedComboBox;
 
     private String citi, region;
     private ArrayList<ArrayList<String>> selectedCities;
 
+    private ObservableList<String> possibleCities;
 
     public void setSelector () {
         getChildren().clear();
@@ -31,36 +30,50 @@ public class RecipientsSelectorUI extends HBox {
             ArrayList<ArrayList<String>> recipientsAdvanced = RecipientsSelector.getRecipientsAdvanced();
 
             ArrayList<String> strings = new ArrayList<>();
-            for (String s:recipientsAdvanced.get(1)) {
-                if(!strings.contains(s)) strings.add(s);
-            }
-            ObservableList<String> cities = FXCollections.observableArrayList( new ArrayList(strings));
-            citiesComboBox = new ComboBox<>(cities);
-            citiesComboBox.setOnAction(event -> citi = citiesComboBox.getValue());
-
-            strings = new ArrayList<>();
             for (String s:recipientsAdvanced.get(2)) {
                 if(!strings.contains(s)) strings.add(s);
             }
             ObservableList<String> regions = FXCollections.observableArrayList( new ArrayList(strings));
             regionComboBox = new ComboBox<>(regions);
-            regionComboBox.setOnAction(event -> region = regionComboBox.getValue());
-
-            selected = FXCollections.observableArrayList();
-            selectedComboBox = new ComboBox<>(selected);
-            selectedComboBox.setOnAction(event -> {
-//            citi = citiesComboBox.getValue();
+            regionComboBox.setOnAction(event -> {
+                region = regionComboBox.getValue();
+                possibleCities.clear();
+                for (int i = 0; i < recipientsAdvanced.get(1).size(); i++) {
+                    if(region.equals(recipientsAdvanced.get(2).get(i)))
+                        if(!possibleCities.contains(recipientsAdvanced.get(1).get(i)))
+                            possibleCities.add(recipientsAdvanced.get(1).get(i));
+                }
             });
 
-            add = new Button("+");
+            strings = new ArrayList<>();
+            for (String s:recipientsAdvanced.get(1)) {
+                if(!strings.contains(s)) strings.add(s);
+            }
+
+//            ObservableList<String> cities
+            possibleCities = FXCollections.observableArrayList();
+            citiesComboBox = new ComboBox<>(possibleCities);
+            citiesComboBox.setOnAction(event -> citi = citiesComboBox.getValue());
+
+            selected = FXCollections.observableArrayList();
+            ComboBox<String> selectedComboBox = new ComboBox<>(selected);
+            selectedComboBox.setOnAction(event -> {
+//                citi = citiesComboBox.getValue();
+            });
+
+            Button add = new Button("+");
             add.setOnAction(event -> {
-                selected.add(selectedCities.get(0).size() + " " + citi + ", " + region);
+                if(region == null) return;
+                if(citi == null){
+                    citi = "Всі міста";
+                }
+                selected.add(citi + ", " + region);
                 selectedCities.get(0).add(citi);
                 selectedCities.get(1).add(region);
                 RecipientsSelector.setCities(selectedCities);
             });
 
-            getChildren().addAll(citiesComboBox, regionComboBox, add, selectedComboBox);
+            getChildren().addAll(regionComboBox, citiesComboBox, add, selectedComboBox);
         }
     }
 

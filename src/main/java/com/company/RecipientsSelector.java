@@ -1,6 +1,6 @@
 package com.company;
 
-import com.company.RecipientsReader;
+
 import java.util.ArrayList;
 
 
@@ -37,7 +37,7 @@ public class RecipientsSelector {
             ArrayList<String> recipients = new ArrayList<>();
             for (int i = 0; i < recipientsAdvanced.get(0).size(); i++) {
                 for (int j = 0; j < cities.get(0).size(); j++) {
-                    if (recipientsAdvanced.get(1).get(i).equals(cities.get(0).get(j)) &&
+                    if ((recipientsAdvanced.get(1).get(i).equals(cities.get(0).get(j)) || "Всі міста".equals(cities.get(0).get(j)) ) &&
                             recipientsAdvanced.get(2).get(i).equals(cities.get(1).get(j))) {
                         recipients.add(recipientsAdvanced.get(0).get(i));
                         j = cities.get(0).size() + 10;//break;

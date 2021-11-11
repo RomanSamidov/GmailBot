@@ -14,7 +14,8 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
-public class RecipientsReader {
+public abstract class RecipientsReader {
+
 
     public static void readRecipients(String path) {
         String string = path.substring(path.lastIndexOf('.')+1).toLowerCase();
@@ -57,6 +58,7 @@ public class RecipientsReader {
         }
 
     }
+
 
     public static void readRecipientsTXT(String path) {
         ArrayList<String> recipients = new ArrayList<>();
