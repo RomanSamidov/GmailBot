@@ -23,9 +23,22 @@ public class RecipientsSelectorUI extends HBox {
 
     private ObservableList<String> possibleCities;
 
+    public RecipientsSelectorUI() {
+        super();
+        setSpacing(10);
+    }
+
     public void unsetSelector () {
         getChildren().clear();
         recipientsSelector = new RecipientsSelector();
+        citiesComboBox = new ComboBox<>();
+        regionComboBox = new ComboBox<>();
+        selectedComboBox = new ComboBox<>();
+        listOfSelected = FXCollections.observableArrayList();
+        citi = null;
+        region = null;
+        selectedCities = new ArrayList<>();
+        possibleCities = FXCollections.observableArrayList();
     }
 
     public void setSelector (RecipientsSelector recipientsSelector1) {

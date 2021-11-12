@@ -6,7 +6,7 @@ import com.company.view.Authorization;
 
 public class Main {
         public static void main(String[] args){
-            Authorization authorization = new Authorization();
+            Authorization authorization = Authorization.authorization;
             authorization.launchIt(args);
     }
 }
