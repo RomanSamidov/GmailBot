@@ -15,7 +15,7 @@ public class RecipientsSelectorUI extends HBox {
     private ComboBox<String> regionComboBox;
     private ObservableList<String> selected;
 
-    private String citi, region;
+    private String citi, region, selectedToDelete;
     private ArrayList<ArrayList<String>> selectedCities;
 
     private ObservableList<String> possibleCities;
@@ -58,7 +58,17 @@ public class RecipientsSelectorUI extends HBox {
             selected = FXCollections.observableArrayList();
             ComboBox<String> selectedComboBox = new ComboBox<>(selected);
             selectedComboBox.setOnAction(event -> {
-//                citi = citiesComboBox.getValue();
+                selectedToDelete = selectedComboBox.getValue();
+            });
+
+            Button del = new Button("-");
+            del.setOnAction(event -> {
+                int i = Integer.parseInt(selectedToDelete.substring(0,selectedToDelete.indexOf(')')));
+                selected.remove(selectedToDelete);
+                selectedCities.get(0).remove(i);
+                selectedCities.get(1).remove(i);
+                RecipientsSelector.setCities(selectedCities);
+
             });
 
             Button add = new Button("+");
@@ -67,13 +77,13 @@ public class RecipientsSelectorUI extends HBox {
                 if(citi == null){
                     citi = "Всі міста";
                 }
-                selected.add(citi + ", " + region);
+                selected.add(selectedCities.get(0).size() + ")" + citi + ", " + region);
                 selectedCities.get(0).add(citi);
                 selectedCities.get(1).add(region);
                 RecipientsSelector.setCities(selectedCities);
             });
 
-            getChildren().addAll(regionComboBox, citiesComboBox, add, selectedComboBox);
+            getChildren().addAll(regionComboBox, citiesComboBox, add, del, selectedComboBox);
         }
     }
 

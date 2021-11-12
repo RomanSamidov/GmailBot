@@ -24,7 +24,6 @@ public class SendersManager {
                 sender.send(subject, text, toEmails.get(i), files);
                 errors.add("На " + toEmails.get(i)+ " от " +sender.getUsername()+ " отправлено \n");
             } catch (Exception e) {
-                System.out.println("НА " + toEmails.get(i)+ " ОТ " +sender.getUsername()+ " НЕ ОТПРАВЛЕНО! \n" + e.getMessage());
                 errors.add("НА " + toEmails.get(i)+ " ОТ " +sender.getUsername()+ " НЕ ОТПРАВЛЕНО! \n" + e.getMessage());
                 hasError = true;
             }

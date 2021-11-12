@@ -30,7 +30,7 @@ public class RecipientsSelector {
 
 
     public static ArrayList<String> getRecipients() {
-        if(cities.isEmpty()) {
+        if(cities.get(0).isEmpty()) {
             if(!recipientsAdvanced.isEmpty()) return recipientsAdvanced.get(0);
             return recipients;
         } else {
