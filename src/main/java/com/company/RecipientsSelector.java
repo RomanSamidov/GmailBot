@@ -6,33 +6,34 @@ import java.util.ArrayList;
 
 public class RecipientsSelector {
 
-    private static ArrayList<String> recipients = new ArrayList<>();
-    private static ArrayList<ArrayList<String>> recipientsAdvanced = new ArrayList<>();
-    private static ArrayList<ArrayList<String>> cities = new ArrayList<>();
+    private ArrayList<String> recipients = new ArrayList<>();
+    private ArrayList<ArrayList<String>> recipientsAdvanced = new ArrayList<>();
+    private ArrayList<ArrayList<String>> cities = new ArrayList<>();
 
 
-    public static void setRecipients(ArrayList<String> recipients) {
-        RecipientsSelector.recipients = recipients;
+    public void setRecipients(ArrayList<String> recipients) {
+        this.recipients = recipients;
         recipientsAdvanced = new ArrayList<>();
     }
 
 
-    public static void setRecipientsAdvanced(ArrayList<ArrayList<String>> recipientsAdvanced) {
-        RecipientsSelector.recipientsAdvanced = recipientsAdvanced;
+    public void setRecipientsAdvanced(ArrayList<ArrayList<String>> recipientsAdvanced) {
+        this.recipientsAdvanced = recipientsAdvanced;
         recipients = new ArrayList<>();
 
     }
 
-    public static boolean readRecipientsFromFile(String path) {
-        RecipientsReader.readRecipients(path);
-        return !recipients.isEmpty() || !recipientsAdvanced.isEmpty();
+    public boolean isEmpty() {
+        return recipients.isEmpty() && recipientsAdvanced.isEmpty();
     }
 
 
-    public static ArrayList<String> getRecipients() {
+    public ArrayList<String> getRecipients() {
         if(cities.get(0).isEmpty()) {
-            if(!recipientsAdvanced.isEmpty()) return recipientsAdvanced.get(0);
-            return recipients;
+            if(!recipientsAdvanced.isEmpty())
+                return recipientsAdvanced.get(0);
+                return recipients;
+
         } else {
             ArrayList<String> recipients = new ArrayList<>();
             for (int i = 0; i < recipientsAdvanced.get(0).size(); i++) {
@@ -49,17 +50,17 @@ public class RecipientsSelector {
     }
 
 
-    public static boolean isAdvanced() {
+    public boolean isAdvanced() {
         return !recipientsAdvanced.isEmpty();
     }
 
 
-    public static ArrayList<ArrayList<String>> getRecipientsAdvanced() {
+    public ArrayList<ArrayList<String>> getRecipientsAdvanced() {
         return recipientsAdvanced;
     }
 
 
-    public static void setCities(ArrayList<ArrayList<String>> cities) {
-        RecipientsSelector.cities = cities;
+    public void setCities(ArrayList<ArrayList<String>> cities) {
+        this.cities = cities;
     }
 }

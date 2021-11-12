@@ -17,18 +17,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public abstract class RecipientsReader {
 
 
-    public static void readRecipients(String path) {
+    public static RecipientsSelector readRecipients(String path) {
         String string = path.substring(path.lastIndexOf('.')+1).toLowerCase();
-        switch (string) {
+        new RecipientsSelector();
+        return switch (string) {
             case "ods" -> readRecipientsODS(path);
             case "txt" -> readRecipientsTXT(path);
             case "xlsx" -> readRecipientsXLSX(path);
-            default -> new ArrayList<>();
-        }
+            default -> new RecipientsSelector();
+        };
     }
 
 
-    public static void readRecipientsODS(String path) {
+    public static RecipientsSelector readRecipientsODS(String path) {
+        RecipientsSelector rs = new RecipientsSelector();
         try {
             SpreadSheet spread = new SpreadSheet(new File(path));
             Sheet sheet = spread.getSheet(0);
@@ -44,29 +46,29 @@ public abstract class RecipientsReader {
                     recipientsAdvanced.get(1).add((String) range.getCell(i, 1).getValue());
                     recipientsAdvanced.get(2).add((String) range.getCell(i, 2).getValue());
                 }
-                RecipientsSelector.setRecipientsAdvanced(recipientsAdvanced);
+                rs.setRecipientsAdvanced(recipientsAdvanced);
             } else {
                 ArrayList<String> recipients = new ArrayList<>();
                 for (int i = 0; i < sheet.getLastRow(); i++) {
                     if (range.getCell(i, 0).getValue() == null) break;
                     recipients.add((String) range.getCell(i, 0).getValue());
                 }
-                RecipientsSelector.setRecipients(recipients);
+               rs.setRecipients(recipients);
             }
         } catch (IOException e){
             e.printStackTrace();
         }
-
+        return rs;
     }
 
 
-    public static void readRecipientsTXT(String path) {
+    public static RecipientsSelector readRecipientsTXT(String path) {
         ArrayList<String> recipients = new ArrayList<>();
+        RecipientsSelector rs = new RecipientsSelector();
         try(FileReader reader = new FileReader(path))
         {
             while (true) {
                 StringBuilder username = new StringBuilder();
-
                 int c = reader.read();
                 if( c == '[') {
                     c = reader.read();
@@ -74,10 +76,8 @@ public abstract class RecipientsReader {
                         if(c != ' ') username.append((char) c);
                         c = reader.read();
                     }
-
                     recipients.add(username.toString());
                 }
-
                 if(c == -1) {
                     break;
                 }
@@ -86,11 +86,13 @@ public abstract class RecipientsReader {
         catch(IOException e){
             e.printStackTrace();
         }
-        RecipientsSelector.setRecipients(recipients);
+        rs.setRecipients(recipients);
+        return rs;
     }
 
 
-    public static void readRecipientsXLSX(String path) {
+    public static RecipientsSelector readRecipientsXLSX(String path) {
+        RecipientsSelector rs = new RecipientsSelector();
         try
         {
             FileInputStream fis = new FileInputStream(path);   //obtaining bytes from the file
@@ -109,21 +111,21 @@ public abstract class RecipientsReader {
                     recipientsAdvanced.get(1).add(row.getCell(1).getStringCellValue());
                     recipientsAdvanced.get(2).add(row.getCell(2).getStringCellValue());
                 }
-                RecipientsSelector.setRecipientsAdvanced(recipientsAdvanced);
+                rs.setRecipientsAdvanced(recipientsAdvanced);
             } else {
                 ArrayList<String> recipients = new ArrayList<>();
                 for (Row row : sheet) {
                     Cell cell = row.getCell(0);
                     recipients.add(cell.getStringCellValue());
                 }
-                RecipientsSelector.setRecipients(recipients);
+                rs.setRecipients(recipients);
             }
         }
         catch(Exception e)
         {
             e.printStackTrace();
         }
-
+        return rs;
     }
 }
 

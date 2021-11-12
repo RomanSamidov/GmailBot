@@ -1,6 +1,7 @@
 package com.company.view;
 
 import com.company.ErrorsWriter;
+import com.company.RecipientsReader;
 import com.company.RecipientsSelector;
 import com.company.ssl.SendersManager;
 import javafx.application.Application;
@@ -46,10 +47,14 @@ public class Authorization extends Application {
             Button button1 = new Button("Обрати");
             button1.setOnAction(event -> {
                 String string = fileChooser1.showOpenDialog(primaryStage).getAbsolutePath();
-                if(RecipientsSelector.readRecipientsFromFile(string)) {
+                RecipientsSelector rs = RecipientsReader.readRecipients(string);
+                if(!rs.isEmpty()) {
                     label.setText("Отримувачі з " + string.substring(string.lastIndexOf('/')+1));
-                    box4.setSelector();
-                } else  label.setText("Необранний файл з отримувачами");
+                    box4.setSelector(rs);
+                } else  {
+                    label.setText("Необранний файл з отримувачами");
+                    box4.unsetSelector();
+                }
             });
             box3.getChildren().addAll(button1, label);
 
@@ -182,7 +187,7 @@ public class Authorization extends Application {
                 Optional<String> password = pd.showAndWait();
 
                 senders.setSender(login.get(), password.get());
-                ArrayList<String> recipients = RecipientsSelector.getRecipients();
+                ArrayList<String> recipients = box4.getRecipients();
                 boolean hasError = senders.sendMessages(recipients, messageSubject.getText(), messageText.getText(), files);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

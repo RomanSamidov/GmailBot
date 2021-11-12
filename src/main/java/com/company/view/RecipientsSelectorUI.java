@@ -11,23 +11,32 @@ import java.util.ArrayList;
 
 public class RecipientsSelectorUI extends HBox {
 
+    private RecipientsSelector recipientsSelector;
+
     private ComboBox<String> citiesComboBox;
     private ComboBox<String> regionComboBox;
-    private ObservableList<String> selected;
+    private ComboBox<String> selectedComboBox;
+    private ObservableList<String> listOfSelected;
 
-    private String citi, region, selectedToDelete;
+    private String citi, region;
     private ArrayList<ArrayList<String>> selectedCities;
 
     private ObservableList<String> possibleCities;
 
-    public void setSelector () {
+    public void unsetSelector () {
         getChildren().clear();
-        if(RecipientsSelector.isAdvanced()) {
+        recipientsSelector = new RecipientsSelector();
+    }
+
+    public void setSelector (RecipientsSelector recipientsSelector1) {
+        getChildren().clear();
+        recipientsSelector = recipientsSelector1;
+        if(recipientsSelector.isAdvanced()) {
             selectedCities = new ArrayList<>();
             selectedCities.add(new ArrayList<>());
             selectedCities.add(new ArrayList<>());
 
-            ArrayList<ArrayList<String>> recipientsAdvanced = RecipientsSelector.getRecipientsAdvanced();
+            ArrayList<ArrayList<String>> recipientsAdvanced = recipientsSelector.getRecipientsAdvanced();
 
             ArrayList<String> strings = new ArrayList<>();
             for (String s:recipientsAdvanced.get(2)) {
@@ -55,20 +64,21 @@ public class RecipientsSelectorUI extends HBox {
             citiesComboBox = new ComboBox<>(possibleCities);
             citiesComboBox.setOnAction(event -> citi = citiesComboBox.getValue());
 
-            selected = FXCollections.observableArrayList();
-            ComboBox<String> selectedComboBox = new ComboBox<>(selected);
-            selectedComboBox.setOnAction(event -> {
-                selectedToDelete = selectedComboBox.getValue();
-            });
+            listOfSelected = FXCollections.observableArrayList();
+            selectedComboBox = new ComboBox<>(listOfSelected);
+//            selectedComboBox.setOnAction(event -> selectedToDelete = selectedComboBox.getValue());
 
             Button del = new Button("-");
             del.setOnAction(event -> {
-                int i = Integer.parseInt(selectedToDelete.substring(0,selectedToDelete.indexOf(')')));
-                selected.remove(selectedToDelete);
+                String toDelete = selectedComboBox.getValue();
+                if(toDelete == null) return;
+                int i = Integer.parseInt(toDelete.substring(0,toDelete.indexOf(')')));
                 selectedCities.get(0).remove(i);
                 selectedCities.get(1).remove(i);
-                RecipientsSelector.setCities(selectedCities);
-
+                listOfSelected.clear();
+                for (int j = 0; j < selectedCities.get(1).size(); j++) {
+                    listOfSelected.add(listOfSelected.size() + ")" + selectedCities.get(0).get(j) + ", " + selectedCities.get(1).get(j));
+                }
             });
 
             Button add = new Button("+");
@@ -77,15 +87,17 @@ public class RecipientsSelectorUI extends HBox {
                 if(citi == null){
                     citi = "Всі міста";
                 }
-                selected.add(selectedCities.get(0).size() + ")" + citi + ", " + region);
+                listOfSelected.add(selectedCities.get(0).size() + ")" + citi + ", " + region);
                 selectedCities.get(0).add(citi);
                 selectedCities.get(1).add(region);
-                RecipientsSelector.setCities(selectedCities);
             });
 
             getChildren().addAll(regionComboBox, citiesComboBox, add, del, selectedComboBox);
         }
     }
 
-
+    public ArrayList<String> getRecipients() {
+        recipientsSelector.setCities(selectedCities);
+        return recipientsSelector.getRecipients();
+    }
 }
