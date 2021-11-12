@@ -1,12 +1,12 @@
 package com.company;
 
 
-import com.company.view.Authorization;
+import com.company.view.Window;
 
 
 public class Main {
         public static void main(String[] args){
-            Authorization authorization = Authorization.authorization;
+            Window authorization = Window.window;
             authorization.launchIt(args);
     }
 }

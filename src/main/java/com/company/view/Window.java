@@ -16,9 +16,9 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.util.*;
 
-public class Authorization extends Application {
+public class Window extends Application {
 
-    public static final Authorization authorization = new Authorization();
+    public static final Window window = new Window();
     private static final SendersManager senders = new SendersManager();
     public static Stage primaryStage;
     public static RecipientsReaderUI recipientsReaderUI;
@@ -27,7 +27,7 @@ public class Authorization extends Application {
 
 
     public void start(final Stage primaryStage) {
-        Authorization.primaryStage = primaryStage;
+        Window.primaryStage = primaryStage;
         try {
             primaryStage.setMaxHeight(700);
             primaryStage.setMinHeight(300);
@@ -86,17 +86,32 @@ public class Authorization extends Application {
 
             });
 
+            Button delFiles = new Button("Открепить файли");
+            delFiles.setVisible(false);
+            delFiles.setOnAction(event -> {
+                files.clear();
+                delFiles.setVisible(false);
+            });
+
             final FileChooser fileChooser = new FileChooser();
             Image addI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ФАЙЛ.png")));
             ImageView addIv=new ImageView(addI);
             addIv.setFitHeight(20);
             addIv.setFitWidth(20);
             Button button = new Button("", addIv);
-            button.setOnAction(event -> files.addAll(fileChooser.showOpenMultipleDialog(primaryStage)));
+
+            button.setOnAction(event -> {
+                    List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
+                    if(list == null) return;
+                    files.addAll(list);
+                delFiles.setVisible(true);
+            });
+
+
 
             HBox box2 = new HBox();
             box2.setSpacing(10);
-            box2.getChildren().addAll(buttonNextView, button);
+            box2.getChildren().addAll(buttonNextView, button, delFiles);
 
             root.getChildren().addAll(box2);
 

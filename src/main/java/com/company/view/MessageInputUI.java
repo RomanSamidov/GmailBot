@@ -18,6 +18,7 @@ public class MessageInputUI extends VBox {
     public void init() {
         setSpacing(10);
         TextField messageSubject = new TextField();
+        messageSubject.setPrefWidth(200);
         messageText = new TextArea();
         messageText.setPrefHeight(600);
         HBox hBox = new HBox();
@@ -83,7 +84,7 @@ public class MessageInputUI extends VBox {
         minus.setOnAction(event -> sizeField.setText(String.valueOf(Integer.parseInt(sizeField.getText())-2)));
 
         Button normal = new Button("Редактор");
-        normal.setOnAction(event -> Authorization.authorization.getHostServices().showDocument("https://htmled.it/redaktor/"));
+        normal.setOnAction(event -> Window.window.getHostServices().showDocument("https://htmled.it/redaktor/"));
 
         box.getChildren().addAll(strong, em, u, size, sizeField, plus, minus, normal);
         return box;
