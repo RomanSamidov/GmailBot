@@ -29,10 +29,11 @@ public class RecipientsSelector {
 
 
     public ArrayList<String> getRecipients() {
+        ArrayList<String>  preResultRecipients;
         if(cities.get(0).isEmpty()) {
             if(!recipientsAdvanced.isEmpty())
-                return recipientsAdvanced.get(0);
-                return recipients;
+                preResultRecipients = new ArrayList(recipientsAdvanced.get(0)); else
+                preResultRecipients = new ArrayList(recipients);
 
         } else {
             ArrayList<String> recipients = new ArrayList<>();
@@ -45,8 +46,14 @@ public class RecipientsSelector {
                     }
                 }
             }
-            return recipients;
+            preResultRecipients = new ArrayList(recipients);
         }
+        ArrayList<String> resultRecipients = new ArrayList<>();
+        for (String s :preResultRecipients) {
+            if(!resultRecipients.contains(s)) resultRecipients.add(s);
+        }
+
+        return resultRecipients;
     }
 
 
