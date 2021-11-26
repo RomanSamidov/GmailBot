@@ -12,9 +12,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.File;
 import java.util.*;
+
 
 public class Window extends Application {
 
@@ -69,7 +69,7 @@ public class Window extends Application {
                     senders.setSender(login.get(), password.get());
                 } else throw new NoSuchElementException();
                 ArrayList<String> recipients = recipientsSelectorUI.getRecipients();
-                boolean hasError = senders.sendMessages(recipients, messageInputUI.messageText.getText(), messageInputUI.messageText.getText(), files);
+                boolean hasError = senders.sendMessages(recipients, messageInputUI.getText(), messageInputUI.getText(), files);
 
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("");

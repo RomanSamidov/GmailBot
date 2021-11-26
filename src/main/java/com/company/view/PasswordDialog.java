@@ -9,6 +9,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 
+
 public class PasswordDialog extends Dialog<String> {
     private PasswordField passwordField;
 
@@ -40,7 +41,4 @@ public class PasswordDialog extends Dialog<String> {
         });
     }
 
-    public PasswordField getPasswordField() {
-        return passwordField;
-    }
 }

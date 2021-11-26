@@ -12,6 +12,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Properties;
 
+
 public class Sender {
     private String username;
     private String password;
@@ -77,7 +78,7 @@ public class Sender {
                     multipart.addBodyPart(messageBodyPart);
                 }
             }catch (Exception e) {
-
+                e.printStackTrace();
             }
             // put everything together
             message.setContent(multipart);

@@ -8,11 +8,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
 import java.util.Objects;
 
+
 public class MessageInputUI extends VBox {
-    public TextArea messageText;
+
+    private TextArea messageText;
 
 
     public void init() {
@@ -88,5 +89,9 @@ public class MessageInputUI extends VBox {
 
         box.getChildren().addAll(strong, em, u, size, sizeField, plus, minus, normal);
         return box;
+    }
+
+    public String getText() {
+        return messageText.getText();
     }
 }
