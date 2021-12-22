@@ -3,114 +3,173 @@ package com.company.view;
 import com.company.RecipientsSelector;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.HBox;
+
 import java.util.ArrayList;
 
 
 public class RecipientsSelectorUI extends HBox {
 
-    private RecipientsSelector recipientsSelector;
+    private static RecipientsSelector recipientsSelector;
 
-    private ComboBox<String> citiesComboBox;
-    private ComboBox<String> regionComboBox;
-    private ComboBox<String> selectedComboBox;
-    private ObservableList<String> listOfSelected;
+    private static ArrayList<ComboBox<String>> listOfComboBoxes;
+    private static ArrayList<ObservableList<String>> listOfSelectableParameters;
+    private static ArrayList<ArrayList<String>> listOfParameters;
 
-    private String citi, region;
-    private ArrayList<ArrayList<String>> selectedCities;
-
-    private ObservableList<String> possibleCities;
+    private static ArrayList<ArrayList<String>> selectedParameters;
+    private static ArrayList<String> nowSelectedParameters;
+    private static ComboBox<String> comboBoxForSelected;
+    private static ObservableList<String> listOfSelectedParameters;
 
     public RecipientsSelectorUI() {
         super();
         setSpacing(10);
     }
 
-    public void unsetSelector () {
+    public void unsetSelector() {
         getChildren().clear();
         recipientsSelector = new RecipientsSelector();
-        citiesComboBox = new ComboBox<>();
-        regionComboBox = new ComboBox<>();
-        selectedComboBox = new ComboBox<>();
-        listOfSelected = FXCollections.observableArrayList();
-        citi = null;
-        region = null;
-        selectedCities = new ArrayList<>();
-        possibleCities = FXCollections.observableArrayList();
+        listOfComboBoxes = new ArrayList<>();
+        listOfSelectableParameters = new ArrayList<>();
+        selectedParameters = new ArrayList<>();
+        comboBoxForSelected = new ComboBox<>();
+        listOfParameters = new ArrayList<>();
+        nowSelectedParameters = new ArrayList<>();
+        listOfSelectedParameters = FXCollections.observableArrayList(new ArrayList());
     }
 
-    public void setSelector (RecipientsSelector recipientsSelector1) {
+    public void setSelector(RecipientsSelector recipientsSelector1) {
         getChildren().clear();
         recipientsSelector = recipientsSelector1;
-        if(recipientsSelector.isAdvanced()) {
-            selectedCities = new ArrayList<>();
-            selectedCities.add(new ArrayList<>());
-            selectedCities.add(new ArrayList<>());
+        selectedParameters = new ArrayList<>();
+        listOfParameters = new ArrayList<>();
+        listOfParameters = recipientsSelector.getParameters();
+        listOfSelectableParameters = new ArrayList<>();
 
-            ArrayList<ArrayList<String>> recipientsAdvanced = recipientsSelector.getRecipientsAdvanced();
-
-            ArrayList<String> strings = new ArrayList<>();
-            for (String s:recipientsAdvanced.get(2)) {
-                if(!strings.contains(s)) strings.add(s);
+        for (int i = 0; i < listOfParameters.size(); i++) {
+            ArrayList<String> arrayList = new ArrayList<>();
+            for (int j = 0; j < listOfParameters.get(i).size(); j++) {
+                if (!arrayList.contains(listOfParameters.get(i).get(j))) {
+                    arrayList.add(listOfParameters.get(i).get(j));
+                }
             }
-            ObservableList<String> regions = FXCollections.observableArrayList( new ArrayList(strings));
-            regionComboBox = new ComboBox<>(regions);
-            regionComboBox.setOnAction(event -> {
-                region = regionComboBox.getValue();
-                possibleCities.clear();
-                for (int i = 0; i < recipientsAdvanced.get(1).size(); i++) {
-                    if(region.equals(recipientsAdvanced.get(2).get(i)))
-                        if(!possibleCities.contains(recipientsAdvanced.get(1).get(i)))
-                            possibleCities.add(recipientsAdvanced.get(1).get(i));
-                }
-            });
-
-            strings = new ArrayList<>();
-            for (String s:recipientsAdvanced.get(1)) {
-                if(!strings.contains(s)) strings.add(s);
-            }
-
-//            ObservableList<String> cities
-            possibleCities = FXCollections.observableArrayList();
-            citiesComboBox = new ComboBox<>(possibleCities);
-            citiesComboBox.setOnAction(event -> citi = citiesComboBox.getValue());
-
-            listOfSelected = FXCollections.observableArrayList();
-            selectedComboBox = new ComboBox<>(listOfSelected);
-//            selectedComboBox.setOnAction(event -> selectedToDelete = selectedComboBox.getValue());
-
-            Button del = new Button("-");
-            del.setOnAction(event -> {
-                String toDelete = selectedComboBox.getValue();
-                if(toDelete == null) return;
-                int i = Integer.parseInt(toDelete.substring(0,toDelete.indexOf(')')));
-                selectedCities.get(0).remove(i);
-                selectedCities.get(1).remove(i);
-                listOfSelected.clear();
-                for (int j = 0; j < selectedCities.get(1).size(); j++) {
-                    listOfSelected.add(listOfSelected.size() + ")" + selectedCities.get(0).get(j) + ", " + selectedCities.get(1).get(j));
-                }
-            });
-
-            Button add = new Button("+");
-            add.setOnAction(event -> {
-                if(region == null) return;
-                if(citi == null){
-                    citi = "Всі міста";
-                }
-                listOfSelected.add(selectedCities.get(0).size() + ")" + citi + ", " + region);
-                selectedCities.get(0).add(citi);
-                selectedCities.get(1).add(region);
-            });
-
-            getChildren().addAll(regionComboBox, citiesComboBox, add, del, selectedComboBox);
+            selectedParameters.add(new ArrayList<>());
+            listOfSelectableParameters.add(FXCollections.observableArrayList(new ArrayList(arrayList)));
         }
+        listOfComboBoxes = new ArrayList<>();
+        nowSelectedParameters = new ArrayList<>();
+        for (int i = 0; i < listOfSelectableParameters.size(); i++) {
+            nowSelectedParameters.add("*");
+            listOfComboBoxes.add(new ComboBox<>(listOfSelectableParameters.get(i)));
+            listOfComboBoxes.get(i).setOnAction(eventHandlerForComboBoxes);
+            listOfComboBoxes.get(i).setPromptText(listOfSelectableParameters.get(i).get(0));
+        }
+        getChildren().addAll(listOfComboBoxes);
+        listOfSelectedParameters = FXCollections.observableArrayList();
+        comboBoxForSelected = new ComboBox<>(listOfSelectedParameters);
+        comboBoxForSelected.setPromptText("Убрать");
+        Button del = new Button("-");
+        del.setOnAction(event -> {
+            String toDelete = comboBoxForSelected.getValue();
+            if (toDelete == null || toDelete.equalsIgnoreCase("убрать")) return;
+            int i = Integer.parseInt(toDelete.substring(0, toDelete.indexOf(')')));
+            for (ArrayList<String> selectedParameter : selectedParameters) {
+                selectedParameter.remove(i);
+            }
+            listOfSelectedParameters.clear();
+            for (int j = 0; j < selectedParameters.get(0).size(); j++) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(listOfSelectedParameters.size()).append(")");
+                for (int z = 0; z < selectedParameters.size(); z++) {
+                    if (z != 0) sb.append(",");
+                    sb.append(selectedParameters.get(z).get(j));
+                }
+                listOfSelectedParameters.add(String.valueOf(sb));
+            }
+            if (listOfSelectedParameters.isEmpty()) {
+                comboBoxForSelected.setValue(null);
+            } else {
+                comboBoxForSelected.setValue(listOfSelectedParameters.get(0));
+            }
+        });
+        Button add = new Button("+");
+        add.setOnAction(event -> {
+            StringBuilder sb = new StringBuilder();
+            sb.append(listOfSelectedParameters.size()).append(")");
+            for (int i = 0; i < nowSelectedParameters.size(); i++) {
+                if (i != 0) sb.append(",");
+                sb.append(nowSelectedParameters.get(i));
+                selectedParameters.get(i).add(nowSelectedParameters.get(i));
+            }
+            listOfSelectedParameters.add(String.valueOf(sb));
+        });
+
+        getChildren().addAll(add, del, comboBoxForSelected);
     }
+
 
     public ArrayList<String> getRecipients() {
-        recipientsSelector.setCities(selectedCities);
+        recipientsSelector.setSelectedParameters(selectedParameters);
         return recipientsSelector.getRecipients();
     }
+
+
+    public static final EventHandler<ActionEvent> eventHandlerForComboBoxes = (event -> {
+        if (((ComboBox) event.getSource()).getItems().isEmpty()) return;
+        if (((ComboBox) event.getSource()).getValue() == null) return;
+        int id = 0;
+        for (id = 0; id < listOfSelectableParameters.size(); id++) {
+            if (((String) ((ComboBox) event.getSource()).getItems().get(0))
+                    .equalsIgnoreCase(listOfSelectableParameters.get(id).get(0))) {
+                break;
+            }
+        }
+        if (((ComboBox) event.getSource()).getValue().toString()
+                .equalsIgnoreCase(listOfSelectableParameters.get(id).get(0))) {
+            nowSelectedParameters.set(id, "*");
+        } else {
+            nowSelectedParameters.set(id, ((ComboBox) event.getSource()).getValue().toString());
+        }
+        for (int j = 0; j < listOfSelectableParameters.size(); j++) {
+            listOfSelectableParameters.get(j).clear();
+            for (int ji = 0; ji < listOfParameters.get(j).size(); ji++) {
+                if (!listOfSelectableParameters.get(j).contains(listOfParameters.get(j).get(ji))) {
+                    int h = 0;
+                    if (ji == 0) {
+                        listOfSelectableParameters.get(j).add(listOfParameters.get(j).get(0));
+                    } else {
+                        while (h < nowSelectedParameters.size()) {
+                            if (nowSelectedParameters.get(h).equalsIgnoreCase("*")
+                                    || listOfParameters.get(h).get(ji).equalsIgnoreCase(nowSelectedParameters.get(h))) {
+                                h++;
+                            } else {
+                                h = nowSelectedParameters.size() + 1;
+                            }
+                            if (h == nowSelectedParameters.size()) {
+                                listOfSelectableParameters.get(j).add(listOfParameters.get(j).get(ji));
+                                h += 2;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        for (int d = 0; d < listOfComboBoxes.size(); d++) {
+            listOfComboBoxes.get(d).setOnAction(ev -> {});
+            if (nowSelectedParameters.get(d).equalsIgnoreCase("*")) {
+                listOfComboBoxes.get(d).setValue(listOfSelectableParameters.get(d).get(0));
+            } else
+                for (int a = 0; a < listOfSelectableParameters.get(d).size(); a++) {
+                    if (listOfSelectableParameters.get(d).get(a).equalsIgnoreCase(nowSelectedParameters.get(d))) {
+                        listOfComboBoxes.get(d).setValue(listOfSelectableParameters.get(d).get(a));
+                        break;
+                    }
+                }
+            listOfComboBoxes.get(d).setOnAction(RecipientsSelectorUI.eventHandlerForComboBoxes);
+        }
+    });
 }

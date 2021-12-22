@@ -5,13 +5,16 @@ import com.company.ssl.SendersManager;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.File;
 import java.util.*;
 
@@ -65,25 +68,28 @@ public class Window extends Application {
                 pd.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
                 Optional<String> password = pd.showAndWait();
 
-                if(login.isPresent() && password.isPresent()) {
+                if (login.isPresent() && password.isPresent()) {
                     senders.setSender(login.get(), password.get());
                 } else throw new NoSuchElementException();
-                ArrayList<String> recipients = recipientsSelectorUI.getRecipients();
-                boolean hasError = senders.sendMessages(recipients, messageInputUI.getText(), messageInputUI.getText(), files);
-
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("");
                 alert.setHeaderText("Результат:");
-                if(!hasError){
+                alert.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
+                try {
+                    ArrayList<String> recipients = recipientsSelectorUI.getRecipients();
+
+                boolean hasError = senders.sendMessages(recipients, messageInputUI.getText(), messageInputUI.getText(), files);
+                if (!hasError) {
                     alert.setContentText("Всем отправило");
-                }
-                else {
+                } else {
                     alert.setContentText("Не всем отправило");
                     ErrorsWriter.writeErrorsODS(senders.getErrors(), recipients);
                 }
-                alert.getDialogPane().setStyle("-fx-base: rgba(60, 60, 60, 255);");
                 alert.showAndWait();
-
+                } catch (NullPointerException e) {
+                    alert.setContentText("Не вибран файл с получателями");
+                    alert.showAndWait();
+                }
             });
 
             Button delFiles = new Button("Открепить файли");
@@ -94,19 +100,18 @@ public class Window extends Application {
             });
 
             final FileChooser fileChooser = new FileChooser();
-            Image addI=new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ФАЙЛ.png")));
-            ImageView addIv=new ImageView(addI);
+            Image addI = new Image(Objects.requireNonNull(getClass().getResourceAsStream("/ФАЙЛ.png")));
+            ImageView addIv = new ImageView(addI);
             addIv.setFitHeight(20);
             addIv.setFitWidth(20);
             Button button = new Button("", addIv);
 
             button.setOnAction(event -> {
-                    List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
-                    if(list == null) return;
-                    files.addAll(list);
+                List<File> list = fileChooser.showOpenMultipleDialog(primaryStage);
+                if (list == null) return;
+                files.addAll(list);
                 delFiles.setVisible(true);
             });
-
 
 
             HBox box2 = new HBox();
@@ -115,10 +120,10 @@ public class Window extends Application {
 
             root.getChildren().addAll(box2);
 
-            Scene scene = new Scene(root,500,600);
+            Scene scene = new Scene(root, 500, 600);
             primaryStage.setScene(scene);
             primaryStage.show();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

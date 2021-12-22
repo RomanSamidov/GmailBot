@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.FileChooser;
+
 import java.io.File;
 
 
@@ -21,13 +22,14 @@ public class RecipientsReaderUI extends HBox {
         Button button1 = new Button("Обрати");
         button1.setOnAction(event -> {
             File file = fileChooser1.showOpenDialog(Window.primaryStage);
-            if(file == null) return;
+            if (file == null) return;
             String string = file.getAbsolutePath();
-            RecipientsSelector rs = RecipientsReader.readRecipients(string);
-            if(!rs.isEmpty()) {
-                label.setText("Отримувачі з " + string.substring(string.lastIndexOf('/')+1));
+            RecipientsSelector rs = new RecipientsSelector();
+            rs.setRecipientsAndParameters(RecipientsReader.readRecipients(string));
+            if (!rs.isEmpty()) {
+                label.setText("Отримувачі з " + string.substring(string.lastIndexOf('/') + 1));
                 Window.recipientsSelectorUI.setSelector(rs);
-            } else  {
+            } else {
                 label.setText("Необранний файл з отримувачами");
                 Window.recipientsSelectorUI.unsetSelector();
             }

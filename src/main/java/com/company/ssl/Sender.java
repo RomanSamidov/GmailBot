@@ -14,19 +14,14 @@ import java.util.Properties;
 
 
 public class Sender {
-    private String username;
-    private String password;
-    private Properties props;
-
-    public String getUsername() {
-        return username;
-    }
+    private final String username;
+    private final String password;
+    private final Properties props;
 
     public Sender(String username, String password) {
         this.username = username;
         this.password = password;
 
-        String host = "smtp.gmail.com";
         props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.auth", "true");
@@ -35,7 +30,11 @@ public class Sender {
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
     }
 
-    public void send(String subject, String text, String toEmail, List<File> files){
+    public String getUsername() {
+        return username;
+    }
+
+    public void send(String subject, String text, String toEmail, List<File> files) {
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(username, password);
@@ -57,9 +56,9 @@ public class Sender {
 
             // first part  (the html)
             BodyPart messageBodyPart = new MimeBodyPart();
-           // String htmlText = "<H1>Hello</H1><img src=\"cid:image\">";
+            // String htmlText = "<H1>Hello</H1><img src=\"cid:image\">";
             ///messageBodyPart.setContent(htmlText, "text/html");
-            messageBodyPart.setContent(text , "text/html; charset=utf-8");
+            messageBodyPart.setContent(text, "text/html; charset=utf-8");
             // add it
             multipart.addBodyPart(messageBodyPart);
 
@@ -77,13 +76,13 @@ public class Sender {
                     //                     add it
                     multipart.addBodyPart(messageBodyPart);
                 }
-            }catch (Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             // put everything together
             message.setContent(multipart);
 
- ///////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////////////////////////////////////////////
             //отправляем сообщение
             Transport.send(message);
         } catch (MessagingException e) {

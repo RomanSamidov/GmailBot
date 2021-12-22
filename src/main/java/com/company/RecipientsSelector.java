@@ -5,68 +5,68 @@ import java.util.ArrayList;
 
 public class RecipientsSelector {
 
-    private ArrayList<String> recipients = new ArrayList<>();
-    private ArrayList<ArrayList<String>> recipientsAdvanced = new ArrayList<>();
-    private ArrayList<ArrayList<String>> cities = new ArrayList<>();
-
-
-    public void setRecipients(ArrayList<String> recipients) {
-        this.recipients = recipients;
-        recipientsAdvanced = new ArrayList<>();
-    }
-
-
-    public void setRecipientsAdvanced(ArrayList<ArrayList<String>> recipientsAdvanced) {
-        this.recipientsAdvanced = recipientsAdvanced;
-        recipients = new ArrayList<>();
-
-    }
-
-    public boolean isEmpty() {
-        return recipients.isEmpty() && recipientsAdvanced.isEmpty();
-    }
+    private ArrayList<ArrayList<String>> recipientsAndParameters = new ArrayList<>();
+    private ArrayList<ArrayList<String>> selectedParameters = new ArrayList<>();
 
 
     public ArrayList<String> getRecipients() {
-        ArrayList<String>  preResultRecipients;
-        if(cities.get(0).isEmpty()) {
-            if(!recipientsAdvanced.isEmpty())
-                preResultRecipients = new ArrayList(recipientsAdvanced.get(0)); else
-                preResultRecipients = new ArrayList(recipients);
-
+        ArrayList<String> preResultRecipients;
+        if (selectedParameters.get(0).isEmpty()) {
+            preResultRecipients = new ArrayList(recipientsAndParameters.get(0));
+            if(preResultRecipients.get(0).equalsIgnoreCase("почта"))
+                preResultRecipients.remove(0);
         } else {
-            ArrayList<String> recipients = new ArrayList<>();
-            for (int i = 0; i < recipientsAdvanced.get(0).size(); i++) {
-                for (int j = 0; j < cities.get(0).size(); j++) {
-                    if ((recipientsAdvanced.get(1).get(i).equals(cities.get(0).get(j)) || "Всі міста".equals(cities.get(0).get(j)) ) &&
-                            recipientsAdvanced.get(2).get(i).equals(cities.get(1).get(j))) {
-                        recipients.add(recipientsAdvanced.get(0).get(i));
-                        j = cities.get(0).size() + 10;//break;
+            preResultRecipients = new ArrayList();
+            for (int i = 1; i < recipientsAndParameters.get(0).size(); i++) {
+                String s = recipientsAndParameters.get(0).get(i);
+                if (!preResultRecipients.contains(s)) {
+                    for (int h = 0; h < selectedParameters.get(0).size(); h++) {
+                        int j = 0;
+                        while (j < selectedParameters.size()) {
+                            if (selectedParameters.get(j).get(h).equalsIgnoreCase("*")
+                                    || recipientsAndParameters.get(j + 1).get(i).equalsIgnoreCase(selectedParameters.get(j).get(h))) {
+                                j++;
+                            } else {
+                                j = selectedParameters.size() + 1;
+                            }
+                            if (j == selectedParameters.size()) {
+                                preResultRecipients.add(s);
+                                h = selectedParameters.get(0).size() + 1;
+                            }
+                        }
                     }
                 }
             }
-            preResultRecipients = new ArrayList(recipients);
         }
         ArrayList<String> resultRecipients = new ArrayList<>();
-        for (String s :preResultRecipients) {
-            if(!resultRecipients.contains(s)) resultRecipients.add(s);
+        for (String s : preResultRecipients) {
+            if (!resultRecipients.contains(s)) resultRecipients.add(s);
         }
-
         return resultRecipients;
     }
 
 
-    public boolean isAdvanced() {
-        return !recipientsAdvanced.isEmpty();
+    public void setRecipientsAndParameters(ArrayList<ArrayList<String>> recipientsAndParameters) {
+        this.recipientsAndParameters = recipientsAndParameters;
+        selectedParameters = new ArrayList<>();
     }
 
 
-    public ArrayList<ArrayList<String>> getRecipientsAdvanced() {
-        return recipientsAdvanced;
+    public boolean isEmpty() {
+        return recipientsAndParameters.isEmpty();
     }
 
 
-    public void setCities(ArrayList<ArrayList<String>> cities) {
-        this.cities = cities;
+    public ArrayList<ArrayList<String>> getParameters() {
+        ArrayList<ArrayList<String>> parameters = new ArrayList<>();
+        for (int i = 1; i < recipientsAndParameters.size(); i++) {
+            parameters.add(new ArrayList<>(recipientsAndParameters.get(i)));
+        }
+        return parameters;
+    }
+
+
+    public void setSelectedParameters(ArrayList<ArrayList<String>> selectedParameters) {
+        this.selectedParameters = selectedParameters;
     }
 }

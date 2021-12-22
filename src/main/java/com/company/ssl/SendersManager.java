@@ -10,10 +10,13 @@ public class SendersManager {
     private ArrayList<String> errors = new ArrayList<>();
 
 
-    public SendersManager(){}
+    public SendersManager() {
+    }
 
 
-    public void setSender(String username, String password) { sender = new Sender(username, password);}
+    public void setSender(String username, String password) {
+        sender = new Sender(username, password);
+    }
 
 
     public boolean sendMessages(ArrayList<String> toEmails, String subject, String text, List<File> files) {
@@ -23,9 +26,9 @@ public class SendersManager {
         while (i < numberEmails) {
             try {
                 sender.send(subject, text, toEmails.get(i), files);
-                errors.add("На " + toEmails.get(i)+ " от " +sender.getUsername()+ " отправлено \n");
+                errors.add("На " + toEmails.get(i) + " от " + sender.getUsername() + " отправлено \n");
             } catch (Exception e) {
-                errors.add("НА " + toEmails.get(i)+ " ОТ " +sender.getUsername()+ " НЕ ОТПРАВЛЕНО! \n" + e.getMessage());
+                errors.add("НА " + toEmails.get(i) + " ОТ " + sender.getUsername() + " НЕ ОТПРАВЛЕНО! \n" + e.getMessage());
                 hasError = true;
             }
             i++;

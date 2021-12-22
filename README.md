@@ -3,7 +3,7 @@
 Программа для рассылки одного письма на множество почт,
 отправляет с почты от гугла.
 
-Файлы Recipients.txt/Recipients.xlsx/Recipients.ods
+Файлы Recipients.xlsx/Recipients.ods
 являються примерами как заполнять список получателей 
 писем. Заполнять согласно примерам в файле.
 
@@ -30,4 +30,4 @@ https://bell-sw.com/pages/downloads/#/java-17-lts%20/%20current
 Необходимо скачать JDK 17 -> full JRE.
 
 Уже готовая программа тут.
-https://drive.google.com/file/d/1HAfELRpgjODztJ-c8HsGPqcCqy3lpMJE/view?usp=sharing
+https://drive.google.com/file/d/1oTP6Dk5eHNzxpQ_9naWXEW1bKZgu5rrI/view?usp=sharing
